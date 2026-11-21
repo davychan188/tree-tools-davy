@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davy 樹木工具表</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --accent: #1a7f37;
+    --accent-light: #e6f4ea;
+    --text: #1f2328;
+    --muted: #656d76;
+    --border: #d0d7de;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "Microsoft JhengHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 1.35rem;
+    font-weight: 650;
+    margin-bottom: 12px;
+  }
+  .search-wrap {
+    position: relative;
+    max-width: 520px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23656d76' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 12px center;
+  }
+  .search-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(26,127,55,.15);
+  }
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .card:hover {
+    border-color: #afb8c1;
+  }
+  .card h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .card .tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    width: fit-content;
+  }
+  .card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    flex: 1;
+  }
+  .card a, .card button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    width: 100%;
+  }
+  .card a:hover, .card button:hover { background: #166a2e; }
+  .note {
+    font-size: 0.78rem;
+    color: #8b949e;
+    margin-top: 2px;
+  }
+  .detail {
+    display: none;
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    color: #24292f;
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+  .detail.show { display: block; }
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 16px;
+  }
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #8b949e;
+    padding: 16px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Davy 樹木工具表</h1>
+  <div class="search-wrap">
+    <input id="q" type="search" placeholder="搜尋工具名稱、關鍵字…" autofocus>
+  </div>
+</header>
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>雙擊或開啟此 HTML 即可使用 · 資料僅儲存在你的瀏覽器</footer>
+
+<script>
+const tools = [
+  {
+    id: "field-tree-schedule",
+    name: "Tree Assessment Schedule",
+    tag: "網頁工具",
+    desc: "離線記錄場地樹木評估表（Batch、Tree No.、品種、H / S / DBH、Remarks、Recommendation），可匯出 Excel。支援九宮格輸入及 TMO 品種搜尋。",
+    url: "https://davychan188.github.io/field-tree-schedule/?v=17",
+    keywords: "field tree schedule assessment batch tree no species dbh 場地 評估 離線 excel tmo tas"
+  },
+  {
+    id: "resistograph-field-app",
+    name: "Resistograph Field Record",
+    tag: "網頁工具",
+    desc: "現場記錄抗鑽儀（Resistograph）巡查：樹資料、GPS、相片，以及鑽孔高度、方向（指南針）與列印紙相片。可離線使用。",
+    url: "https://hugoleung04.github.io/resistograph-field-app/",
+    keywords: "resistograph 抗鑽儀 鑽孔 compass gps 現場 離線 相片 drilling"
+  },
+  {
+    id: "section-scan",
+    name: "剖形 SectionScan",
+    tag: "網頁工具",
+    desc: "用相片或匯入 USDZ／GLB 查看 3D 模型橫截面，以毫米量度外形，並可匯出截面 SVG 到 CAD。",
+    url: "https://hugoleung04.github.io/SectionScan/",
+    keywords: "剖形 sectionscan 截面 3d usdz glb svg cad 量度 毫米"
+  },
+  {
+    id: "form-2-assessment",
+    name: "Form 2 Assessment",
+    tag: "網頁工具",
+    desc: "現場記錄 Form 2 評估：樹資料、附近環境、目標物、建議、相片與 GPS，可匯出 Word／JSON。可離線使用。",
+    url: "https://hugoleung04.github.io/form-2-assessment/",
+    keywords: "form 2 assessment 評估 目標物 附近環境 word json gps 現場 離線"
+  }
+];
+
+const grid = document.getElementById("grid");
+const q = document.getElementById("q");
+
+function render(list) {
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty">沒有符合「${q.value.trim()}」的工具</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(t => `
+    <article class="card" data-id="${t.id}">
+      <span class="tag">${t.tag}</span>
+      <h2>${t.name}</h2>
+      <p>${t.desc}</p>
+      ${t.url
+        ? `<a href="${t.url}" target="_blank" rel="noopener">開啟工具</a>`
+        : `<button onclick="toggleDetail('${t.id}')">查看說明</button>
+           <div class="detail" id="detail-${t.id}">${t.detail || ""}</div>`
+      }
+    </article>
+  `).join("");
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById("detail-" + id);
+  if (el) el.classList.toggle("show");
+}
+
+function filter() {
+  const s = q.value.trim().toLowerCase();
+  if (!s) return render(tools);
+  const hit = tools.filter(t =>
+    (t.name + " " + t.desc + " " + (t.keywords || "") + " " + (t.detail || "")).toLowerCase().includes(s)
+  );
+  render(hit);
+}
+
+q.addEventListener("input", filter);
+render(tools);
+</script>
+</body>
+</html>
