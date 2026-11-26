@@ -1,4 +1,4 @@
-const CACHE = "tree-tools-davy-v4";
+const CACHE = "tree-tools-davy-v5";
 const ASSETS = [
   "./",
   "./index.html",
